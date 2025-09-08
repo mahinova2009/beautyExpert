@@ -1,1 +1,170 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<title>Регистрация Beauty Expert</title>
+<style>
+  :root{
+    --accent:#6A0DAD;          /* королевский пурпур */
+    --accent-dark:#4B0277;     /* темнее для hover */
+    --bg:#FAF9F7;             /* нежный беж */
+    --input:#F0EDED;          /* светлый ввод */
+    --text:#333;              /* основной текст */
+  }
+  body{
+    font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background:var(--bg);
+    display:flex;justify-content:center;align-items:center;height:100vh;margin:0;
+  }
+  .form-box{
+    background:#fff;border-radius:12px;padding:30px 40px;box-shadow:0 4px 12px rgba(0,0,0,.1);
+    width:100%;max-width:420px;
+  }
+  h2{
+    text-align:center;color:var(--accent);margin-bottom:25px;
+  }
+  label{
+    display:block;margin-bottom:12px;font-weight:500;color:var(--text);
+  }
+  input,select{
+    width:100%;padding:10px 12px;border:1px solid #ccc;border-radius:8px;
+    font-size:15px;box-sizing:border-box;transition:border-color .2s;
+    background:var(--input);
+  }
+  input:focus,select:focus{
+    outline:none;border-color:var(--accent);box-shadow:0 0 4px rgba(106,13,173,.3);
+  }
+  button{
+    width:100%;padding:12px 0;background:var(--accent);color:#fff;border:none;border-radius:8px;
+    font-size:16px;cursor:pointer;font-weight:bold;margin-top:20px;transition:background .2s;
+  }
+  button:hover{background:var(--accent-dark);}
+  .msg{margin-top:15px;text-align:center;font-weight:bold;}
+  .msg.success{color:green;}
+  .msg.error{color:darkred;}
+  .hidden{display:none;}
+</style>
+</head>
+<body>
+<div class="form-box">
+  <h2>Регистрация Beauty Expert</h2>
+  <form id="form">
+    <label>ФИО
+      <input type="text" name="fullName" required placeholder="Иванов Иван Иванович">
+    </label>
+    <label>Телефон
+      <input type="tel" name="phone" required placeholder="+7 912 345-67-89">
+    </label>
+    <label>Email
+      <input type="email" name="email" required placeholder="mail@example.com">
+    </label>
+    <label>Дата рождения
+      <input type="date" name="birthDate" required>
+    </label>
+    <label>Тип участника
+      <select id="role" name="role" required>
+        <option value="">--выберите--</option>
+        <option value="consultant">Консультант</option>
+        <option value="client">Клиент</option>
+      </select>
+    </label>
 
+    <!-- Этот блок виден только, если выбран «Клиент» -->
+    <div id="consultantsBlock" class="hidden">
+      <label>Выберите консультанта
+        <select id="consultantSelect" name="consultant" required>
+          <option value="">--выберите--</option>
+          <!-- Заполняется динамически -->
+        </select>
+      </label>
+    </div>
+
+    <input type="hidden" name="timezone" id="timezoneHidden">
+    <input type="hidden" name="chat_id" id="chat_id">
+    
+    <button type="submit">Отправить</button>
+    <div id="msg" class="msg"></div>
+  </form>
+</div>
+
+<script>
+/* 1️⃣ Часовой пояс */
+document.getElementById('timezoneHidden').value = Intl.DateTimeFormat().resolvedOptions().timeZone || 'UTC';
+
+/* 2️⃣ Chat‑ID из URL, если понадобится */
+document.getElementById('chat_id').value = new URLSearchParams(window.location.search).get('chat_id') || '';
+
+/* 3️⃣ Статический список консультантов (замените AJAX‑запросом, если нужен динамический вариант) */
+const consultants = [
+  { id: 'c001', name: 'Марина Александрова' },
+  { id: 'c002', name: 'Андрей Соколов' },
+  { id: 'c003', name: 'Елена Климова' }
+];
+const consultantSelect = document.getElementById('consultantSelect');
+consultants.forEach(c=>{
+  const opt=document.createElement('option');
+  opt.value=c.id; opt.textContent=c.name;
+  consultantSelect.appendChild(opt);
+});
+
+/* 4️⃣ Показ/скрытие списка консультантов */
+const roleSel=document.getElementById('role');
+const consultantsBlock=document.getElementById('consultantsBlock');
+roleSel.addEventListener('change',()=>{
+  if(roleSel.value==='client'){
+    consultantsBlock.classList.remove('hidden');
+  }else{
+    consultantsBlock.classList.add('hidden');
+  }
+});
+
+/* 5️⃣ Валидация + отправка */
+const form=document.getElementById('form');
+const msg=document.getElementById('msg');
+form.addEventListener('submit', async e=>{
+  e.preventDefault();
+  msg.textContent=''; msg.className='msg';
+  
+  const data={
+    fullName:form.fullName.value.trim(),
+    phone:form.phone.value.trim(),
+    email:form.email.value.trim(),
+    birthDate:form.birthDate.value,
+    role:roleSel.value,
+    consultant: consultantSelect.value || null,
+    timezone: document.getElementById('timezoneHidden').value,
+    chat_id: document.getElementById('chat_id').value
+  };
+
+  /* 5️⃣ client‑side validation */
+  if(!data.fullName||!data.phone||!data.email||!data.birthDate||
+     (data.role==='client' && !data.consultant)){
+    msg.textContent='Пожалуйста, заполните все обязательные поля.';
+    msg.classList.add('error');
+    return;
+  }
+
+  try{
+    const webhookUrl='https://hook.eu2.make.com/1unspxkdfik4bgnhsvpra9m71urdffcj'; // ← ваш Make webhook
+    const res=await fetch(webhookUrl,{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify(data)
+    });
+    if(res.ok){
+      msg.textContent='✅ Данные успешно отправлены!';
+      msg.classList.add('success');
+      form.reset();
+    }else{
+      const txt=await res.text();
+      msg.textContent=`❌ Ошибка ${res.status}: ${txt}`;
+      msg.classList.add('error');
+    }
+  }catch(err){
+    msg.textContent='❌ Ошибка сети. Проверьте подключение.';
+    msg.classList.add('error');
+  }
+});
+</script>
+</body>
+</html>
