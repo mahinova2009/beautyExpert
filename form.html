@@ -76,8 +76,8 @@
     gap: 8px;
   }
   .country-select {
-    width: 90px;
-    min-width: 90px;
+    width: 105px; /* 🟢 увеличено, чтобы код точно влез */
+    min-width: 105px;
     padding: 10px;
     border-radius: 8px;
     border: 1px solid #ccc;
@@ -151,8 +151,8 @@
     <label id="labelRole">Тип участника
       <select id="role" name="role" required>
         <option value="">--выберите--</option>
-        <option value="consultant">Консультант</option>
-        <option value="client">Клиент</option>
+        <option value="consultant" data-ru="Консультант" data-ro="Consultant" data-en="Consultant">Консультант</option>
+        <option value="client" data-ru="Клиент" data-ro="Client" data-en="Client">Клиент</option>
       </select>
     </label>
 
@@ -223,7 +223,8 @@ const translations = {
       fullName: "Иванов Иван Иванович",
       phone: "123 456 789",
       email: "mail@example.com"
-    }
+    },
+    options: { consultant: "Консультант", client: "Клиент" }
   },
   ro: {
     title: "Înregistrare Beauty Expert",
@@ -239,7 +240,8 @@ const translations = {
       fullName: "Ion Popescu",
       phone: "123 456 789",
       email: "mail@example.com"
-    }
+    },
+    options: { consultant: "Consultant", client: "Client" }
   },
   en: {
     title: "Beauty Expert Registration",
@@ -255,7 +257,8 @@ const translations = {
       fullName: "John Smith",
       phone: "123 456 789",
       email: "mail@example.com"
-    }
+    },
+    options: { consultant: "Consultant", client: "Client" }
   }
 };
 
@@ -278,6 +281,12 @@ document.querySelectorAll('.lang-switch button').forEach(btn=>{
     document.querySelector('input[name="fullName"]').placeholder=t.placeholders.fullName;
     document.querySelector('input[name="phone"]').placeholder=t.placeholders.phone;
     document.querySelector('input[name="email"]').placeholder=t.placeholders.email;
+
+    // Перевод опций выпадающего списка
+    const optConsultant=document.querySelector('#role option[value="consultant"]');
+    const optClient=document.querySelector('#role option[value="client"]');
+    optConsultant.textContent=t.options.consultant;
+    optClient.textContent=t.options.client;
   });
 });
 
