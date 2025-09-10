@@ -211,7 +211,7 @@ document.getElementById('chat_id').value=new URLSearchParams(window.location.sea
 /* Загрузка консультантов из Google Sheets */
 async function loadConsultants(){
   try{
-    const url="https://opensheet.elk.sh/<ВАШ_ID_ТАБЛИЦЫ>/Consultant";
+    const url="https://opensheet.elk.sh/10CzQHC01UjusQsFYobQ6a54zV0z__XAkxva_Ir3vDVw/Consultant";
     const res=await fetch(url);
     const data=await res.json();
     const sel=document.getElementById('consultantSelect');
