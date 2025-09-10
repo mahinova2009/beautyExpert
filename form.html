@@ -181,7 +181,7 @@
 document.getElementById('chat_id').value = new URLSearchParams(window.location.search).get('chat_id') || '';
 
 /* 📌 Загрузка консультантов */
-const sheetURL = "https://opensheet.elk.sh/ВАШ_ID_ТАБЛИЦЫ/Consultant";
+const sheetURL = "https://opensheet.elk.sh/10CzQHC01UjusQsFYobQ6a54zV0z__XAkxva_Ir3vDVw/Consultant";
 fetch(sheetURL)
   .then(r=>r.json())
   .then(rows=>{
