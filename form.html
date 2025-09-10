@@ -4,123 +4,75 @@
 <meta charset="UTF-8">
 <title>Регистрация Beauty Expert</title>
 <style>
-  :root {
-    --accent: #F48FB1;
-    --accent-dark: #C2185B;
-    --bg: #FFF8F9;
-    --input: #FDEFF3;
-    --text: #333;
+  :root{
+    --accent:#e75480;          /* розовый Mary Kay */
+    --accent-dark:#c7436a;
+    --bg:#fff0f5;
+    --input:#fff;
+    --text:#333;
   }
-  body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background: var(--bg);
-    display: flex; justify-content: center; align-items: center;
-    height: 100vh; margin: 0;
+  body{
+    font-family:'Segoe UI', Tahoma, sans-serif;
+    background:var(--bg);
+    display:flex;justify-content:center;align-items:center;
+    height:100vh;margin:0;
   }
-  .form-box {
-    background: #fff;
-    border-radius: 12px;
-    padding: 30px 40px;
-    box-shadow: 0 4px 12px rgba(0,0,0,.1);
-    width: 100%; max-width: 420px;
+  .form-box{
+    background:#fff;border-radius:12px;padding:25px 35px;
+    box-shadow:0 4px 12px rgba(0,0,0,.1);
+    width:100%;max-width:430px;
   }
-  h2 {
-    text-align: center;
-    color: var(--accent);
-    margin-bottom: 20px;
+  h2{text-align:center;color:var(--accent);margin-bottom:20px;}
+  label{display:block;margin-bottom:10px;font-weight:500;color:var(--text);}
+  input,select{
+    width:100%;padding:10px 12px;border:1px solid #ccc;border-radius:8px;
+    font-size:15px;background:var(--input);box-sizing:border-box;
   }
-  .lang-switch {
-    display: flex;
-    justify-content: center;
-    gap: 8px;
-    margin-bottom: 15px;
+  input:focus,select:focus{
+    outline:none;border-color:var(--accent);box-shadow:0 0 4px rgba(231,84,128,.3);
   }
-  .lang-switch button {
-    width: 36px;
-    height: 36px;
-    border: 1px solid var(--accent);
-    border-radius: 6px;
-    background: white;
-    cursor: pointer;
-    font-weight: bold;
-    color: var(--accent);
+  .phone-wrapper{
+    display:flex;align-items:center;gap:8px;
   }
-  .lang-switch button.active {
-    background: var(--accent);
-    color: white;
+  .country-flag{
+    display:flex;align-items:center;justify-content:center;
+    width:70px;padding:8px;border:1px solid #ccc;border-radius:8px;
+    cursor:pointer;background:var(--input);
   }
-  label {
-    display: block;
-    margin-bottom: 12px;
-    font-weight: 500;
-    color: var(--text);
+  .country-dropdown{
+    display:none;position:absolute;background:white;border:1px solid #ccc;
+    max-height:150px;overflow-y:auto;z-index:10;border-radius:6px;width:80px;
   }
-  input, select {
-    width: 100%;
-    padding: 10px 12px;
-    border: 1px solid #ccc;
-    border-radius: 8px;
-    font-size: 15px;
-    box-sizing: border-box;
-    background: var(--input);
-    transition: border-color .2s;
+  .country-dropdown div{padding:6px;cursor:pointer;text-align:center;}
+  .country-dropdown div:hover{background:#f0f0f0;}
+  .lang-buttons{
+    display:flex;justify-content:center;gap:10px;margin-bottom:15px;
   }
-  input:focus, select:focus {
-    outline: none;
-    border-color: var(--accent);
-    box-shadow: 0 0 4px rgba(244,143,177,.3);
+  .lang-buttons button{
+    flex:1;padding:8px;border:1px solid var(--accent);
+    background:white;color:var(--accent);font-weight:bold;
+    border-radius:6px;cursor:pointer;
   }
-  .phone-group {
-    display: flex;
-    align-items: center;
-    gap: 8px;
+  .lang-buttons button.active{background:var(--accent);color:white;}
+  button[type=submit]{
+    width:100%;padding:12px 0;background:var(--accent);
+    color:#fff;border:none;border-radius:8px;font-size:16px;font-weight:bold;
+    margin-top:15px;cursor:pointer;
   }
-  .country-select {
-    width: 105px; /* 🟢 увеличено, чтобы код точно влез */
-    min-width: 105px;
-    padding: 10px;
-    border-radius: 8px;
-    border: 1px solid #ccc;
-    background: var(--input);
+  button[type=submit]:hover{background:var(--accent-dark);}
+  .msg{margin-top:15px;text-align:center;font-weight:bold;}
+  .msg.success{color:green;} .msg.error{color:darkred;}
+  .hidden{display:none;}
+  .checkbox-container{
+    display:flex;align-items:center;margin-top:10px;font-size:14px;
   }
-  .phone-input {
-    flex: 1;
-  }
-  button {
-    width: 100%;
-    padding: 12px 0;
-    background: var(--accent);
-    color: #fff;
-    border: none;
-    border-radius: 8px;
-    font-size: 16px;
-    cursor: pointer;
-    font-weight: bold;
-    margin-top: 20px;
-    transition: background .2s;
-  }
-  button:hover { background: var(--accent-dark); }
-  .privacy {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    font-size: 13px;
-    margin-top: 10px;
-  }
-  .msg {
-    margin-top: 15px;
-    text-align: center;
-    font-weight: bold;
-  }
-  .msg.success { color: green; }
-  .msg.error { color: darkred; }
-  .hidden { display: none; }
+  .checkbox-container input{margin-right:8px;}
 </style>
 </head>
 <body>
 <div class="form-box">
-  <h2 id="title">Регистрация Beauty Expert</h2>
-  <div class="lang-switch">
+  <h2 id="formTitle">Регистрация Beauty Expert</h2>
+  <div class="lang-buttons">
     <button type="button" data-lang="ru" class="active">RU</button>
     <button type="button" data-lang="ro">RO</button>
     <button type="button" data-lang="en">EN</button>
@@ -129,19 +81,13 @@
     <label id="labelName">ФИО
       <input type="text" name="fullName" required placeholder="Иванов Иван Иванович">
     </label>
-    <label id="labelPhone">Телефон</label>
-    <div class="phone-group">
-      <select id="countryCode" class="country-select">
-        <option value="+373" selected>🇲🇩 +373</option>
-        <option value="+7">🇷🇺 +7</option>
-        <option value="+380">🇺🇦 +380</option>
-        <option value="+40">🇷🇴 +40</option>
-        <option value="+49">🇩🇪 +49</option>
-        <option value="+1">🇺🇸 +1</option>
-        <option value="+971">🇦🇪 +971</option>
-      </select>
-      <input type="tel" class="phone-input" name="phone" required placeholder="123 456 789">
-    </div>
+    <label id="labelPhone">Телефон
+      <div class="phone-wrapper">
+        <div class="country-flag" id="flagSelect">🇲🇩 +373</div>
+        <input type="tel" name="phone" required placeholder="123456789">
+      </div>
+      <div class="country-dropdown" id="countryDropdown"></div>
+    </label>
     <label id="labelEmail">Email
       <input type="email" name="email" required placeholder="mail@example.com">
     </label>
@@ -151,23 +97,23 @@
     <label id="labelRole">Тип участника
       <select id="role" name="role" required>
         <option value="">--выберите--</option>
-        <option value="consultant" data-ru="Консультант" data-ro="Consultant" data-en="Consultant">Консультант</option>
-        <option value="client" data-ru="Клиент" data-ro="Client" data-en="Client">Клиент</option>
+        <option value="consultant">Консультант</option>
+        <option value="client">Клиент</option>
       </select>
     </label>
 
     <div id="consultantsBlock" class="hidden">
       <label id="labelConsultant">Выберите консультанта
-        <select id="consultantSelect" name="consultant">
+        <select id="consultantSelect" name="consultant" required>
           <option value="">--выберите--</option>
         </select>
       </label>
     </div>
 
-    <label class="privacy">
-      <input type="checkbox" id="privacyCheck" required>
-      <span id="privacyText">Согласен на обработку персональных данных</span>
-    </label>
+    <div class="checkbox-container">
+      <input type="checkbox" id="consent" required>
+      <label for="consent" id="labelConsent">Согласен на обработку персональных данных</label>
+    </div>
 
     <input type="hidden" name="chat_id" id="chat_id">
 
@@ -177,162 +123,125 @@
 </div>
 
 <script>
-/* 📌 Chat ID */
-document.getElementById('chat_id').value = new URLSearchParams(window.location.search).get('chat_id') || '';
+/* 🌍 Список стран с кодами */
+const countries = [
+  { name:"Молдова", code:"+373", flag:"🇲🇩" },
+  { name:"Россия", code:"+7", flag:"🇷🇺" },
+  { name:"Украина", code:"+380", flag:"🇺🇦" },
+  { name:"Румыния", code:"+40", flag:"🇷🇴" },
+  { name:"США", code:"+1", flag:"🇺🇸" },
+  { name:"Германия", code:"+49", flag:"🇩🇪" },
+  { name:"Франция", code:"+33", flag:"🇫🇷" }
+];
 
-/* 📌 Загрузка консультантов */
-const sheetURL = "https://opensheet.elk.sh/10CzQHC01UjusQsFYobQ6a54zV0z__XAkxva_Ir3vDVw/Consultant";
-fetch(sheetURL)
+const flagSelect=document.getElementById('flagSelect');
+const dropdown=document.getElementById('countryDropdown');
+flagSelect.addEventListener('click',()=>{
+  dropdown.innerHTML='';
+  countries.forEach(c=>{
+    const div=document.createElement('div');
+    div.textContent=`${c.flag} ${c.code}`;
+    div.addEventListener('click',()=>{
+      flagSelect.textContent=`${c.flag} ${c.code}`;
+      dropdown.style.display='none';
+    });
+    dropdown.appendChild(div);
+  });
+  dropdown.style.display='block';
+});
+
+/* Chat ID */
+document.getElementById('chat_id').value=new URLSearchParams(window.location.search).get('chat_id')||'';
+
+/* Роль -> показать консультантов */
+const roleSel=document.getElementById('role');
+const block=document.getElementById('consultantsBlock');
+roleSel.addEventListener('change',()=>{
+  if(roleSel.value==='client'){
+    block.classList.remove('hidden');
+  }else{
+    block.classList.add('hidden');
+  }
+});
+
+/* Загрузка консультантов */
+fetch("https://opensheet.elk.sh/10CzQHC01UjusQsFYobQ6a54zV0z__XAkxva_Ir3vDVw/Consultant")
   .then(r=>r.json())
   .then(rows=>{
     const select=document.getElementById('consultantSelect');
     rows.forEach(r=>{
-      const opt=document.createElement('option');
-      opt.value=r.ID || r.Name;
-      opt.textContent=r.Name;
-      select.appendChild(opt);
+      if(r["ФИО"]){
+        const opt=document.createElement('option');
+        opt.value=r["ФИО"];
+        opt.textContent=r["ФИО"];
+        select.appendChild(opt);
+      }
     });
-  });
+  })
+  .catch(err=>console.error("Ошибка загрузки консультантов:",err));
 
-/* 📌 Показ/скрытие блока консультантов */
-const roleSel=document.getElementById('role');
-roleSel.addEventListener('change',()=>{
-  const block=document.getElementById('consultantsBlock');
-  if(roleSel.value==='client'){
-    block.classList.remove('hidden');
-    document.getElementById('consultantSelect').setAttribute('required','true');
-  }else{
-    block.classList.add('hidden');
-    document.getElementById('consultantSelect').removeAttribute('required');
-  }
-});
-
-/* 🌍 Переводы */
-const translations = {
-  ru: {
-    title: "Регистрация Beauty Expert",
-    labelName: "ФИО",
-    labelPhone: "Телефон",
-    labelEmail: "Email",
-    labelBirth: "Дата рождения",
-    labelRole: "Тип участника",
-    labelConsultant: "Выберите консультанта",
-    privacyText: "Согласен на обработку персональных данных",
-    submitBtn: "Отправить",
-    placeholders: {
-      fullName: "Иванов Иван Иванович",
-      phone: "123 456 789",
-      email: "mail@example.com"
-    },
-    options: { consultant: "Консультант", client: "Клиент" }
-  },
-  ro: {
-    title: "Înregistrare Beauty Expert",
-    labelName: "Nume complet",
-    labelPhone: "Telefon",
-    labelEmail: "Email",
-    labelBirth: "Data nașterii",
-    labelRole: "Tip participant",
-    labelConsultant: "Alege consultant",
-    privacyText: "Sunt de acord cu prelucrarea datelor personale",
-    submitBtn: "Trimite",
-    placeholders: {
-      fullName: "Ion Popescu",
-      phone: "123 456 789",
-      email: "mail@example.com"
-    },
-    options: { consultant: "Consultant", client: "Client" }
-  },
-  en: {
-    title: "Beauty Expert Registration",
-    labelName: "Full Name",
-    labelPhone: "Phone",
-    labelEmail: "Email",
-    labelBirth: "Date of Birth",
-    labelRole: "Role",
-    labelConsultant: "Choose Consultant",
-    privacyText: "I agree to personal data processing",
-    submitBtn: "Submit",
-    placeholders: {
-      fullName: "John Smith",
-      phone: "123 456 789",
-      email: "mail@example.com"
-    },
-    options: { consultant: "Consultant", client: "Client" }
-  }
+/* Перевод */
+const translations={
+  ru:{title:"Регистрация Beauty Expert",name:"ФИО",phone:"Телефон",email:"Email",birth:"Дата рождения",
+      role:"Тип участника",consultant:"Выберите консультанта",consent:"Согласен на обработку персональных данных",
+      submit:"Отправить",roles:{consultant:"Консультант",client:"Клиент"}},
+  ro:{title:"Înregistrare Beauty Expert",name:"Nume complet",phone:"Telefon",email:"Email",birth:"Data nașterii",
+      role:"Tip participant",consultant:"Alegeți consultant",consent:"Sunt de acord cu prelucrarea datelor personale",
+      submit:"Trimite",roles:{consultant:"Consultant",client:"Client"}},
+  en:{title:"Beauty Expert Registration",name:"Full Name",phone:"Phone",email:"Email",birth:"Date of Birth",
+      role:"Participant Type",consultant:"Choose Consultant",consent:"I agree to data processing",
+      submit:"Submit",roles:{consultant:"Consultant",client:"Client"}}
 };
-
-document.querySelectorAll('.lang-switch button').forEach(btn=>{
+document.querySelectorAll('.lang-buttons button').forEach(btn=>{
   btn.addEventListener('click',()=>{
-    const lang=btn.dataset.lang;
-    document.querySelectorAll('.lang-switch button').forEach(b=>b.classList.remove('active'));
+    document.querySelectorAll('.lang-buttons button').forEach(b=>b.classList.remove('active'));
     btn.classList.add('active');
-
-    const t=translations[lang];
-    document.getElementById('title').textContent=t.title;
-    document.getElementById('labelName').childNodes[0].textContent=t.labelName;
-    document.getElementById('labelPhone').textContent=t.labelPhone;
-    document.getElementById('labelEmail').childNodes[0].textContent=t.labelEmail;
-    document.getElementById('labelBirth').childNodes[0].textContent=t.labelBirth;
-    document.getElementById('labelRole').childNodes[0].textContent=t.labelRole;
-    document.getElementById('labelConsultant').childNodes[0].textContent=t.labelConsultant;
-    document.getElementById('privacyText').textContent=t.privacyText;
-    document.getElementById('submitBtn').textContent=t.submitBtn;
-    document.querySelector('input[name="fullName"]').placeholder=t.placeholders.fullName;
-    document.querySelector('input[name="phone"]').placeholder=t.placeholders.phone;
-    document.querySelector('input[name="email"]').placeholder=t.placeholders.email;
-
-    // Перевод опций выпадающего списка
-    const optConsultant=document.querySelector('#role option[value="consultant"]');
-    const optClient=document.querySelector('#role option[value="client"]');
-    optConsultant.textContent=t.options.consultant;
-    optClient.textContent=t.options.client;
+    const t=translations[btn.dataset.lang];
+    document.getElementById('formTitle').textContent=t.title;
+    document.getElementById('labelName').childNodes[0].textContent=t.name;
+    document.getElementById('labelPhone').childNodes[0].textContent=t.phone;
+    document.getElementById('labelEmail').childNodes[0].textContent=t.email;
+    document.getElementById('labelBirth').childNodes[0].textContent=t.birth;
+    document.getElementById('labelRole').childNodes[0].textContent=t.role;
+    document.getElementById('labelConsultant').childNodes[0].textContent=t.consultant;
+    document.getElementById('labelConsent').textContent=t.consent;
+    document.getElementById('submitBtn').textContent=t.submit;
+    roleSel.options[1].text=t.roles.consultant;
+    roleSel.options[2].text=t.roles.client;
   });
 });
 
-/* 📌 Отправка формы */
+/* Отправка */
 const form=document.getElementById('form');
 const msg=document.getElementById('msg');
 form.addEventListener('submit',async e=>{
   e.preventDefault();
-  msg.textContent='';
-  msg.className='msg';
-  
-  if(!document.getElementById('privacyCheck').checked){
-    msg.textContent='⚠ Необходимо согласие на обработку данных.';
-    msg.classList.add('error');
+  if(!document.getElementById('consent').checked){
+    msg.textContent='☝️ Необходимо согласие на обработку данных';
+    msg.className='msg error';
     return;
   }
-
   const data={
     fullName:form.fullName.value.trim(),
-    phone:document.getElementById('countryCode').value + form.phone.value.trim(),
+    phone:form.phone.value.trim(),
     email:form.email.value.trim(),
     birthDate:form.birthDate.value,
     role:roleSel.value,
     consultant: document.getElementById('consultantSelect').value || null,
     chat_id: document.getElementById('chat_id').value
   };
-
   try{
-    const webhookUrl='https://hook.eu2.make.com/9h9m39efm8lp2sen3fm6y6rm74rrc73n';
-    const res=await fetch(webhookUrl,{
-      method:'POST',
-      headers:{'Content-Type':'application/json'},
-      body:JSON.stringify(data)
+    const res=await fetch('https://hook.eu2.make.com/9h9m39efm8lp2sen3fm6y6rm74rrc73n',{
+      method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(data)
     });
     if(res.ok){
-      msg.textContent='✅ Данные успешно отправлены!';
-      msg.classList.add('success');
-      form.reset();
+      msg.textContent='✅ Данные отправлены!';
+      msg.className='msg success';form.reset();
     }else{
-      const txt=await res.text();
-      msg.textContent=`❌ Ошибка ${res.status}: ${txt}`;
-      msg.classList.add('error');
+      msg.textContent='❌ Ошибка отправки';msg.className='msg error';
     }
   }catch(err){
-    msg.textContent='❌ Ошибка сети. Проверьте подключение.';
-    msg.classList.add('error');
+    msg.textContent='❌ Ошибка сети';msg.className='msg error';
   }
 });
 </script>
