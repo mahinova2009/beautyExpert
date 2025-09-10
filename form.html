@@ -5,7 +5,7 @@
 <title>Регистрация Beauty Expert</title>
 <style>
   :root {
-    --accent: #F48FB1;         /* розовый (Mary Kay style) */
+    --accent: #F48FB1;
     --accent-dark: #C2185B;
     --bg: #FFF8F9;
     --input: #FDEFF3;
@@ -27,7 +27,27 @@
   h2 {
     text-align: center;
     color: var(--accent);
-    margin-bottom: 25px;
+    margin-bottom: 20px;
+  }
+  .lang-switch {
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+    margin-bottom: 15px;
+  }
+  .lang-switch button {
+    width: 36px;
+    height: 36px;
+    border: 1px solid var(--accent);
+    border-radius: 6px;
+    background: white;
+    cursor: pointer;
+    font-weight: bold;
+    color: var(--accent);
+  }
+  .lang-switch button.active {
+    background: var(--accent);
+    color: white;
   }
   label {
     display: block;
@@ -42,8 +62,8 @@
     border-radius: 8px;
     font-size: 15px;
     box-sizing: border-box;
-    transition: border-color .2s;
     background: var(--input);
+    transition: border-color .2s;
   }
   input:focus, select:focus {
     outline: none;
@@ -56,12 +76,15 @@
     gap: 8px;
   }
   .country-select {
-    width: 70px;
+    width: 90px;
+    min-width: 90px;
     padding: 10px;
     border-radius: 8px;
     border: 1px solid #ccc;
     background: var(--input);
-    cursor: pointer;
+  }
+  .phone-input {
+    flex: 1;
   }
   button {
     width: 100%;
@@ -76,8 +99,13 @@
     margin-top: 20px;
     transition: background .2s;
   }
-  button:hover {
-    background: var(--accent-dark);
+  button:hover { background: var(--accent-dark); }
+  .privacy {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 13px;
+    margin-top: 10px;
   }
   .msg {
     margin-top: 15px;
@@ -87,23 +115,21 @@
   .msg.success { color: green; }
   .msg.error { color: darkred; }
   .hidden { display: none; }
-  .privacy {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    font-size: 13px;
-    margin-top: 10px;
-  }
 </style>
 </head>
 <body>
 <div class="form-box">
-  <h2>Регистрация Beauty Expert</h2>
+  <h2 id="title">Регистрация Beauty Expert</h2>
+  <div class="lang-switch">
+    <button type="button" data-lang="ru" class="active">RU</button>
+    <button type="button" data-lang="ro">RO</button>
+    <button type="button" data-lang="en">EN</button>
+  </div>
   <form id="form">
-    <label>ФИО
+    <label id="labelName">ФИО
       <input type="text" name="fullName" required placeholder="Иванов Иван Иванович">
     </label>
-    <label>Телефон</label>
+    <label id="labelPhone">Телефон</label>
     <div class="phone-group">
       <select id="countryCode" class="country-select">
         <option value="+373" selected>🇲🇩 +373</option>
@@ -114,15 +140,15 @@
         <option value="+1">🇺🇸 +1</option>
         <option value="+971">🇦🇪 +971</option>
       </select>
-      <input type="tel" name="phone" required placeholder="123 456 789">
+      <input type="tel" class="phone-input" name="phone" required placeholder="123 456 789">
     </div>
-    <label>Email
+    <label id="labelEmail">Email
       <input type="email" name="email" required placeholder="mail@example.com">
     </label>
-    <label>Дата рождения
+    <label id="labelBirth">Дата рождения
       <input type="date" name="birthDate" required>
     </label>
-    <label>Тип участника
+    <label id="labelRole">Тип участника
       <select id="role" name="role" required>
         <option value="">--выберите--</option>
         <option value="consultant">Консультант</option>
@@ -131,7 +157,7 @@
     </label>
 
     <div id="consultantsBlock" class="hidden">
-      <label>Выберите консультанта
+      <label id="labelConsultant">Выберите консультанта
         <select id="consultantSelect" name="consultant">
           <option value="">--выберите--</option>
         </select>
@@ -140,12 +166,12 @@
 
     <label class="privacy">
       <input type="checkbox" id="privacyCheck" required>
-      Согласен на обработку персональных данных
+      <span id="privacyText">Согласен на обработку персональных данных</span>
     </label>
 
     <input type="hidden" name="chat_id" id="chat_id">
 
-    <button type="submit">Отправить</button>
+    <button type="submit" id="submitBtn">Отправить</button>
     <div id="msg" class="msg"></div>
   </form>
 </div>
@@ -154,7 +180,7 @@
 /* 📌 Chat ID */
 document.getElementById('chat_id').value = new URLSearchParams(window.location.search).get('chat_id') || '';
 
-/* 📌 Загрузка консультантов из Google Sheets */
+/* 📌 Загрузка консультантов */
 const sheetURL = "https://opensheet.elk.sh/ВАШ_ID_ТАБЛИЦЫ/Consultant";
 fetch(sheetURL)
   .then(r=>r.json())
@@ -179,6 +205,80 @@ roleSel.addEventListener('change',()=>{
     block.classList.add('hidden');
     document.getElementById('consultantSelect').removeAttribute('required');
   }
+});
+
+/* 🌍 Переводы */
+const translations = {
+  ru: {
+    title: "Регистрация Beauty Expert",
+    labelName: "ФИО",
+    labelPhone: "Телефон",
+    labelEmail: "Email",
+    labelBirth: "Дата рождения",
+    labelRole: "Тип участника",
+    labelConsultant: "Выберите консультанта",
+    privacyText: "Согласен на обработку персональных данных",
+    submitBtn: "Отправить",
+    placeholders: {
+      fullName: "Иванов Иван Иванович",
+      phone: "123 456 789",
+      email: "mail@example.com"
+    }
+  },
+  ro: {
+    title: "Înregistrare Beauty Expert",
+    labelName: "Nume complet",
+    labelPhone: "Telefon",
+    labelEmail: "Email",
+    labelBirth: "Data nașterii",
+    labelRole: "Tip participant",
+    labelConsultant: "Alege consultant",
+    privacyText: "Sunt de acord cu prelucrarea datelor personale",
+    submitBtn: "Trimite",
+    placeholders: {
+      fullName: "Ion Popescu",
+      phone: "123 456 789",
+      email: "mail@example.com"
+    }
+  },
+  en: {
+    title: "Beauty Expert Registration",
+    labelName: "Full Name",
+    labelPhone: "Phone",
+    labelEmail: "Email",
+    labelBirth: "Date of Birth",
+    labelRole: "Role",
+    labelConsultant: "Choose Consultant",
+    privacyText: "I agree to personal data processing",
+    submitBtn: "Submit",
+    placeholders: {
+      fullName: "John Smith",
+      phone: "123 456 789",
+      email: "mail@example.com"
+    }
+  }
+};
+
+document.querySelectorAll('.lang-switch button').forEach(btn=>{
+  btn.addEventListener('click',()=>{
+    const lang=btn.dataset.lang;
+    document.querySelectorAll('.lang-switch button').forEach(b=>b.classList.remove('active'));
+    btn.classList.add('active');
+
+    const t=translations[lang];
+    document.getElementById('title').textContent=t.title;
+    document.getElementById('labelName').childNodes[0].textContent=t.labelName;
+    document.getElementById('labelPhone').textContent=t.labelPhone;
+    document.getElementById('labelEmail').childNodes[0].textContent=t.labelEmail;
+    document.getElementById('labelBirth').childNodes[0].textContent=t.labelBirth;
+    document.getElementById('labelRole').childNodes[0].textContent=t.labelRole;
+    document.getElementById('labelConsultant').childNodes[0].textContent=t.labelConsultant;
+    document.getElementById('privacyText').textContent=t.privacyText;
+    document.getElementById('submitBtn').textContent=t.submitBtn;
+    document.querySelector('input[name="fullName"]').placeholder=t.placeholders.fullName;
+    document.querySelector('input[name="phone"]').placeholder=t.placeholders.phone;
+    document.querySelector('input[name="email"]').placeholder=t.placeholders.email;
+  });
 });
 
 /* 📌 Отправка формы */
