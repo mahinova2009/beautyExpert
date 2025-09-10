@@ -5,7 +5,7 @@
 <title>Регистрация Beauty Expert</title>
 <style>
   :root{
-    --accent:#e75480;          /* розовый Mary Kay */
+    --accent:#e75480;          
     --accent-dark:#c7436a;
     --bg:#fff0f5;
     --input:#fff;
@@ -104,7 +104,7 @@
 
     <div id="consultantsBlock" class="hidden">
       <label id="labelConsultant">Выберите консультанта
-        <select id="consultantSelect" name="consultant" required>
+        <select id="consultantSelect" name="consultant">
           <option value="">--выберите--</option>
         </select>
       </label>
@@ -153,14 +153,17 @@ flagSelect.addEventListener('click',()=>{
 /* Chat ID */
 document.getElementById('chat_id').value=new URLSearchParams(window.location.search).get('chat_id')||'';
 
-/* Роль -> показать консультантов */
+/* Роль -> показать консультантов и снять required для консультанта, если не клиент */
 const roleSel=document.getElementById('role');
 const block=document.getElementById('consultantsBlock');
 roleSel.addEventListener('change',()=>{
+  const consultantSelect=document.getElementById('consultantSelect');
   if(roleSel.value==='client'){
     block.classList.remove('hidden');
+    consultantSelect.required = true; // обязательно для клиента
   }else{
     block.classList.add('hidden');
+    consultantSelect.required = false; // не обязательно для консультанта
   }
 });
 
