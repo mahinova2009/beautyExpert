@@ -17,8 +17,8 @@ label{display:block;margin-bottom:10px;font-weight:500;color:var(--text);}
 input,select{ width:100%;padding:10px 12px;border:1px solid #ccc;border-radius:8px; font-size:15px;background:var(--input);box-sizing:border-box; }
 input:focus,select:focus{ outline:none;border-color:var(--accent);box-shadow:0 0 4px rgba(231,84,128,.3); }
 .phone-wrapper{ display:flex;align-items:center;gap:8px; }
-.country-flag{ display:flex;align-items:center;justify-content:center; width:90px;padding:8px;border:1px solid #ccc;border-radius:8px; cursor:pointer;background:var(--input); }
-.country-dropdown{ display:none;position:absolute;background:white;border:1px solid #ccc; max-height:150px;overflow-y:auto;z-index:10;border-radius:6px;width:110px; }
+.country-flag{ display:flex;align-items:center;justify-content:center; width:70px;padding:8px;border:1px solid #ccc;border-radius:8px; cursor:pointer;background:var(--input); }
+.country-dropdown{ display:none;position:absolute;background:white;border:1px solid #ccc; max-height:150px;overflow-y:auto;z-index:10;border-radius:6px;width:80px; }
 .country-dropdown div{padding:6px;cursor:pointer;text-align:center;}
 .country-dropdown div:hover{background:#f0f0f0;}
 .lang-buttons{ display:flex;justify-content:center;gap:10px;margin-bottom:15px; }
@@ -119,17 +119,16 @@ roleSel.addEventListener('change',()=>{
   }
 });
 
-// --- Загрузка консультантов с chat_id ---
+// --- Загрузка консультантов с chat_id из таблицы ---
 fetch("https://opensheet.elk.sh/10CzQHC01UjusQsFYobQ6a54zV0z__XAkxva_Ir3vDVw/Consultant")
 .then(r=>r.json())
 .then(rows=>{
   const select=document.getElementById('consultantSelect');
   rows.forEach(r=>{
-    if(r["ФИО"] && r["chat_id"]){ // убедимся что есть chat_id
+    if(r["ФИО"] && r["chat_id"]){
       const opt=document.createElement('option');
-      opt.value = r["chat_id"];   // value теперь chat_id
+      opt.value = r["chat_id"];   // сохраняем chat_id для webhook
       opt.textContent = r["ФИО"]; // отображаем ФИО
-      opt.dataset.fio = r["ФИО"]; // для хранения ФИО отдельно
       select.appendChild(opt);
     }
   });
@@ -170,12 +169,12 @@ form.addEventListener('submit',async e=>{
     msg.className='msg error';
     return;
   }
-  
+
   const consultantSelect = document.getElementById('consultantSelect');
   let consultantData = null;
   if(roleSel.value==='client' && consultantSelect.value){
     consultantData = {
-      fullName: consultantSelect.selectedOptions[0].dataset.fio,
+      fullName: consultantSelect.options[consultantSelect.selectedIndex].text,
       chat_id: consultantSelect.value
     };
   }
@@ -186,8 +185,8 @@ form.addEventListener('submit',async e=>{
     email:form.email.value.trim(),
     birthDate:form.birthDate.value,
     role:roleSel.value,
-    consultant: consultantData, // теперь объект с ФИО и chat_id
-    chat_id: document.getElementById('chat_id').value
+    consultant: consultantData, // объект с ФИО и chat_id
+    chat_id: document.getElementById('chat_id').value // chat_id пользователя из URL
   };
 
   try{
