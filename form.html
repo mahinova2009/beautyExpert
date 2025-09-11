@@ -92,7 +92,7 @@
       <input type="email" name="email" id="email" required placeholder="mail@example.com">
     </label>
     <label id="labelBirth">Дата рождения
-      <input type="date" name="birthDate" required>
+      <input type="date" name="birthDate" id="birthDate" required placeholder="ДД.ММ.ГГГГ">
     </label>
     <label id="labelRole">Тип участника
       <select id="role" name="role" required>
@@ -123,7 +123,8 @@
 </div>
 
 <script>
-/* 🌍 Список стран с кодами */
+let selectedCode = "+373";
+
 const countries = [
   { name:"Молдова", code:"+373", flag:"🇲🇩" },
   { name:"Россия", code:"+7", flag:"🇷🇺" },
@@ -133,9 +134,6 @@ const countries = [
   { name:"Германия", code:"+49", flag:"🇩🇪" },
   { name:"Франция", code:"+33", flag:"🇫🇷" }
 ];
-
-/* ✅ выбранный код телефона */
-let selectedCode = "+373";
 
 const flagSelect=document.getElementById('flagSelect');
 const dropdown=document.getElementById('countryDropdown');
@@ -154,10 +152,8 @@ flagSelect.addEventListener('click',()=>{
   dropdown.style.display='block';
 });
 
-/* Chat ID */
 document.getElementById('chat_id').value=new URLSearchParams(window.location.search).get('chat_id')||'';
 
-/* Роль -> показать консультантов */
 const roleSel=document.getElementById('role');
 const block=document.getElementById('consultantsBlock');
 roleSel.addEventListener('change',()=>{
@@ -171,7 +167,6 @@ roleSel.addEventListener('change',()=>{
   }
 });
 
-/* Загрузка консультантов */
 fetch("https://opensheet.elk.sh/10CzQHC01UjusQsFYobQ6a54zV0z__XAkxva_Ir3vDVw/Consultant")
   .then(r=>r.json())
   .then(rows=>{
@@ -187,21 +182,21 @@ fetch("https://opensheet.elk.sh/10CzQHC01UjusQsFYobQ6a54zV0z__XAkxva_Ir3vDVw/Con
   })
   .catch(err=>console.error("Ошибка загрузки консультантов:",err));
 
-/* Перевод + плейсхолдеры */
 const translations={
   ru:{title:"Регистрация Beauty Expert",name:"ФИО",phone:"Телефон",email:"Email",birth:"Дата рождения",
       role:"Тип участника",consultant:"Выберите консультанта",consent:"Согласен на обработку персональных данных",
-      submit:"Отправить",placeholders:{name:"Иванов Иван Иванович",phone:"123456789",email:"mail@example.com"},
+      submit:"Отправить",placeholders:{name:"Иванов Иван Иванович",phone:"123456789",email:"mail@example.com",birth:"ДД.ММ.ГГГГ"},
       roles:{consultant:"Консультант",client:"Клиент"}},
   ro:{title:"Înregistrare Beauty Expert",name:"Nume complet",phone:"Telefon",email:"Email",birth:"Data nașterii",
       role:"Tip participant",consultant:"Alegeți consultant",consent:"Sunt de acord cu prelucrarea datelor personale",
-      submit:"Trimite",placeholders:{name:"Ion Popescu",phone:"071234567",email:"mail@exemplu.com"},
+      submit:"Trimite",placeholders:{name:"Ion Popescu",phone:"071234567",email:"mail@exemplu.com",birth:"ZZ.LL.AAAA"},
       roles:{consultant:"Consultant",client:"Client"}},
   en:{title:"Beauty Expert Registration",name:"Full Name",phone:"Phone",email:"Email",birth:"Date of Birth",
       role:"Participant Type",consultant:"Choose Consultant",consent:"I agree to data processing",
-      submit:"Submit",placeholders:{name:"John Smith",phone:"1234567890",email:"mail@example.com"},
+      submit:"Submit",placeholders:{name:"John Smith",phone:"1234567890",email:"mail@example.com",birth:"YYYY-MM-DD"},
       roles:{consultant:"Consultant",client:"Client"}}
 };
+
 document.querySelectorAll('.lang-buttons button').forEach(btn=>{
   btn.addEventListener('click',()=>{
     document.querySelectorAll('.lang-buttons button').forEach(b=>b.classList.remove('active'));
@@ -219,12 +214,12 @@ document.querySelectorAll('.lang-buttons button').forEach(btn=>{
     document.getElementById('fullName').placeholder=t.placeholders.name;
     document.getElementById('phone').placeholder=t.placeholders.phone;
     document.getElementById('email').placeholder=t.placeholders.email;
+    document.getElementById('birthDate').placeholder=t.placeholders.birth;
     roleSel.options[1].text=t.roles.consultant;
     roleSel.options[2].text=t.roles.client;
   });
 });
 
-/* Отправка */
 const form=document.getElementById('form');
 const msg=document.getElementById('msg');
 form.addEventListener('submit',async e=>{
