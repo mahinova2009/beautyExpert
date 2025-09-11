@@ -36,12 +36,12 @@
   }
   .country-flag{
     display:flex;align-items:center;justify-content:center;
-    width:90px;padding:8px;border:1px solid #ccc;border-radius:8px;
+    width:70px;padding:8px;border:1px solid #ccc;border-radius:8px;
     cursor:pointer;background:var(--input);
   }
   .country-dropdown{
     display:none;position:absolute;background:white;border:1px solid #ccc;
-    max-height:150px;overflow-y:auto;z-index:10;border-radius:6px;width:110px;
+    max-height:150px;overflow-y:auto;z-index:10;border-radius:6px;width:80px;
   }
   .country-dropdown div{padding:6px;cursor:pointer;text-align:center;}
   .country-dropdown div:hover{background:#f0f0f0;}
@@ -79,17 +79,17 @@
   </div>
   <form id="form">
     <label id="labelName">ФИО
-      <input type="text" name="fullName" required placeholder="Иванов Иван Иванович">
+      <input type="text" name="fullName" id="fullName" required placeholder="Иванов Иван Иванович">
     </label>
     <label id="labelPhone">Телефон
       <div class="phone-wrapper">
         <div class="country-flag" id="flagSelect">🇲🇩 +373</div>
-        <input type="tel" name="phone" required placeholder="123456789">
+        <input type="tel" name="phone" id="phone" required placeholder="123456789">
       </div>
       <div class="country-dropdown" id="countryDropdown"></div>
     </label>
     <label id="labelEmail">Email
-      <input type="email" name="email" required placeholder="mail@example.com">
+      <input type="email" name="email" id="email" required placeholder="mail@example.com">
     </label>
     <label id="labelBirth">Дата рождения
       <input type="date" name="birthDate" required>
@@ -135,7 +135,7 @@ const countries = [
 ];
 
 /* ✅ выбранный код телефона */
-let selectedCode = "+373"; // по умолчанию Молдова
+let selectedCode = "+373";
 
 const flagSelect=document.getElementById('flagSelect');
 const dropdown=document.getElementById('countryDropdown');
@@ -146,7 +146,7 @@ flagSelect.addEventListener('click',()=>{
     div.textContent=`${c.flag} ${c.code}`;
     div.addEventListener('click',()=>{
       flagSelect.textContent=`${c.flag} ${c.code}`;
-      selectedCode = c.code; // обновляем выбранный код
+      selectedCode = c.code;
       dropdown.style.display='none';
     });
     dropdown.appendChild(div);
@@ -187,17 +187,20 @@ fetch("https://opensheet.elk.sh/10CzQHC01UjusQsFYobQ6a54zV0z__XAkxva_Ir3vDVw/Con
   })
   .catch(err=>console.error("Ошибка загрузки консультантов:",err));
 
-/* Перевод */
+/* Перевод + плейсхолдеры */
 const translations={
   ru:{title:"Регистрация Beauty Expert",name:"ФИО",phone:"Телефон",email:"Email",birth:"Дата рождения",
       role:"Тип участника",consultant:"Выберите консультанта",consent:"Согласен на обработку персональных данных",
-      submit:"Отправить",roles:{consultant:"Консультант",client:"Клиент"}},
+      submit:"Отправить",placeholders:{name:"Иванов Иван Иванович",phone:"123456789",email:"mail@example.com"},
+      roles:{consultant:"Консультант",client:"Клиент"}},
   ro:{title:"Înregistrare Beauty Expert",name:"Nume complet",phone:"Telefon",email:"Email",birth:"Data nașterii",
       role:"Tip participant",consultant:"Alegeți consultant",consent:"Sunt de acord cu prelucrarea datelor personale",
-      submit:"Trimite",roles:{consultant:"Consultant",client:"Client"}},
+      submit:"Trimite",placeholders:{name:"Ion Popescu",phone:"071234567",email:"mail@exemplu.com"},
+      roles:{consultant:"Consultant",client:"Client"}},
   en:{title:"Beauty Expert Registration",name:"Full Name",phone:"Phone",email:"Email",birth:"Date of Birth",
       role:"Participant Type",consultant:"Choose Consultant",consent:"I agree to data processing",
-      submit:"Submit",roles:{consultant:"Consultant",client:"Client"}}
+      submit:"Submit",placeholders:{name:"John Smith",phone:"1234567890",email:"mail@example.com"},
+      roles:{consultant:"Consultant",client:"Client"}}
 };
 document.querySelectorAll('.lang-buttons button').forEach(btn=>{
   btn.addEventListener('click',()=>{
@@ -213,6 +216,9 @@ document.querySelectorAll('.lang-buttons button').forEach(btn=>{
     document.getElementById('labelConsultant').childNodes[0].textContent=t.consultant;
     document.getElementById('labelConsent').textContent=t.consent;
     document.getElementById('submitBtn').textContent=t.submit;
+    document.getElementById('fullName').placeholder=t.placeholders.name;
+    document.getElementById('phone').placeholder=t.placeholders.phone;
+    document.getElementById('email').placeholder=t.placeholders.email;
     roleSel.options[1].text=t.roles.consultant;
     roleSel.options[2].text=t.roles.client;
   });
@@ -230,7 +236,7 @@ form.addEventListener('submit',async e=>{
   }
   const data={
     fullName:form.fullName.value.trim(),
-    phone:selectedCode + form.phone.value.trim(), // ✅ теперь телефон с кодом
+    phone:selectedCode + form.phone.value.trim(),
     email:form.email.value.trim(),
     birthDate:form.birthDate.value,
     role:roleSel.value,
