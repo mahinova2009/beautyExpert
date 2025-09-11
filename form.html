@@ -36,12 +36,12 @@
   }
   .country-flag{
     display:flex;align-items:center;justify-content:center;
-    width:90px;padding:8px;border:1px solid #ccc;border-radius:8px;
+    width:70px;padding:8px;border:1px solid #ccc;border-radius:8px;
     cursor:pointer;background:var(--input);
   }
   .country-dropdown{
     display:none;position:absolute;background:white;border:1px solid #ccc;
-    max-height:150px;overflow-y:auto;z-index:10;border-radius:6px;width:110px;
+    max-height:150px;overflow-y:auto;z-index:10;border-radius:6px;width:80px;
   }
   .country-dropdown div{padding:6px;cursor:pointer;text-align:center;}
   .country-dropdown div:hover{background:#f0f0f0;}
@@ -134,6 +134,9 @@ const countries = [
   { name:"Франция", code:"+33", flag:"🇫🇷" }
 ];
 
+/* ✅ выбранный код телефона */
+let selectedCode = "+373"; // по умолчанию Молдова
+
 const flagSelect=document.getElementById('flagSelect');
 const dropdown=document.getElementById('countryDropdown');
 flagSelect.addEventListener('click',()=>{
@@ -143,6 +146,7 @@ flagSelect.addEventListener('click',()=>{
     div.textContent=`${c.flag} ${c.code}`;
     div.addEventListener('click',()=>{
       flagSelect.textContent=`${c.flag} ${c.code}`;
+      selectedCode = c.code; // обновляем выбранный код
       dropdown.style.display='none';
     });
     dropdown.appendChild(div);
@@ -153,17 +157,17 @@ flagSelect.addEventListener('click',()=>{
 /* Chat ID */
 document.getElementById('chat_id').value=new URLSearchParams(window.location.search).get('chat_id')||'';
 
-/* Роль -> показать консультантов и снять required для консультанта, если не клиент */
+/* Роль -> показать консультантов */
 const roleSel=document.getElementById('role');
 const block=document.getElementById('consultantsBlock');
 roleSel.addEventListener('change',()=>{
   const consultantSelect=document.getElementById('consultantSelect');
   if(roleSel.value==='client'){
     block.classList.remove('hidden');
-    consultantSelect.required = true; // обязательно для клиента
+    consultantSelect.required = true;
   }else{
     block.classList.add('hidden');
-    consultantSelect.required = false; // не обязательно для консультанта
+    consultantSelect.required = false;
   }
 });
 
@@ -226,7 +230,7 @@ form.addEventListener('submit',async e=>{
   }
   const data={
     fullName:form.fullName.value.trim(),
-    phone:form.phone.value.trim(),
+    phone:selectedCode + form.phone.value.trim(), // ✅ теперь телефон с кодом
     email:form.email.value.trim(),
     birthDate:form.birthDate.value,
     role:roleSel.value,
